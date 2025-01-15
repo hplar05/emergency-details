@@ -18,21 +18,12 @@ export function LocationTracker() {
       return;
     }
 
-    const watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-      },
-      (error) => {
-        setLocation({
-          latitude: 0,
-          longitude: 0,
-          error: "Unable to retrieve your location",
-        });
-      }
-    );
+    const watchId = navigator.geolocation.watchPosition((position) => {
+      setLocation({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      });
+    });
 
     return () => navigator.geolocation.clearWatch(watchId);
   }, []);
