@@ -85,7 +85,11 @@ export function EmergencyCenter() {
           <TabsContent value="map" className="p-4">
             <Card>
               <CardContent className="p-0">
-                <Map center={punturinCenter.coordinates} />
+                <Map
+                  centerLocation={
+                    punturinCenter.coordinates as google.maps.LatLngLiteral
+                  }
+                />
               </CardContent>
             </Card>
           </TabsContent>

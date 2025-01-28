@@ -4,9 +4,11 @@ import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, MapPin, RefreshCw } from "lucide-react";
+import { Map } from "./Map";
+import { punturinCenter } from "../../data/punturinData";
 
 export function LocationTracker() {
-  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(
+  const [location, setLocation] = useState<google.maps.LatLngLiteral | null>(
     null
   );
   const [isLoading, setIsLoading] = useState(false);
@@ -16,13 +18,21 @@ export function LocationTracker() {
     setIsLoading(true);
     setError(null);
     if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setLocation({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-        setIsLoading(false);
-      });
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+          setIsLoading(false);
+        },
+        (error) => {
+          setError(
+            `Unable to retrieve your location. Please enable location services. ${error} `
+          );
+          setIsLoading(false);
+        }
+      );
     } else {
       setError("Geolocation is not supported by your browser");
       setIsLoading(false);
@@ -64,6 +74,12 @@ export function LocationTracker() {
                 </p>
               </div>
             </div>
+            <Map
+              centerLocation={
+                punturinCenter.coordinates as google.maps.LatLngLiteral
+              }
+              userLocation={location}
+            />
             <Button
               onClick={getLocation}
               variant="outline"
